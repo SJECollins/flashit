@@ -111,7 +111,7 @@ export default function SessionDetails() {
           Reviewed on: {session.reviewedAt.toLocaleString()}
         </Text>
       )}
-      <Text variant="bodyMedium">Session type: {session.review_type}</Text>
+      <Text variant="bodyMedium">Session type: {session.reviewType}</Text>
       {category && <Text variant="bodyMedium">Category: {category.name}</Text>}
       {subcategory && (
         <Text variant="bodyMedium">Subcategory: {subcategory.name}</Text>

@@ -67,7 +67,11 @@ export default function SessionsScreen() {
           <Text>No sessions found.</Text>
         )}
       </ScrollView>
-      <Button icon="plus" mode="contained" onPress={() => router.push("./new")}>
+      <Button
+        icon="plus"
+        mode="contained"
+        onPress={() => router.push("./session")}
+      >
         New Session
       </Button>
     </PageView>

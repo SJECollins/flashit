@@ -24,9 +24,9 @@ export interface Card {
   subcategoryId?: string; // ID of the parent sub
   title: string;
   definition: string;
-  last_reviewed?: Date;
-  num_correct: number; // Number of times answered correctly
-  num_incorrect: number; // Number of times answered incorrectly
+  lastReviewed?: Date;
+  numCorrect: number; // Number of times answered correctly
+  numIncorrect: number; // Number of times answered incorrectly
   clue?: string; // Optional hint for the card
   createdAt: Date;
 }
@@ -35,7 +35,7 @@ export interface ReviewSession {
   id: string;
   categoryId: string;
   subcategoryId?: string;
-  review_type: "standard" | "timed" | "100%" | "incorrect" | "custom";
+  reviewType: "standard" | "timed" | "100%" | "incorrect" | "custom";
   wrong: string[];
   right: string[];
   reviewedAt?: Date;
@@ -68,9 +68,9 @@ export const setupDatabase = () => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             definition TEXT NOT NULL,
-            last_reviewed DATE,
-            num_correct INTEGER,
-            num_incorrect INTEGER,
+            lastReviewed DATE,
+            numCorrect INTEGER,
+            numIncorrect INTEGER,
             clue TEXT,
             categoryId INTEGER,
             subcategoryId INTEGER,
@@ -83,7 +83,7 @@ export const setupDatabase = () => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             categoryId INTEGER,
             subcategoryId INTEGER,
-            review_type TEXT NOT NULL,
+            reviewType TEXT NOT NULL,
             wrong TEXT,
             right TEXT,
             reviewedAt DATE,
@@ -253,9 +253,9 @@ export const getAllCards = (): Card[] => {
       subcategoryId: result.subcategoryId,
       title: result.title,
       definition: result.definition,
-      last_reviewed: result.last_reviewed,
-      num_correct: result.num_correct,
-      num_incorrect: result.num_incorrect,
+      lastReviewed: result.lastReviewed,
+      numCorrect: result.numCorrect,
+      numIncorrect: result.numIncorrect,
       clue: result.clue,
       createdAt: new Date(result.createdAt),
     })
@@ -275,9 +275,9 @@ export const getCardsByCategory = (categoryId: string): Card[] => {
       subcategoryId: result.subcategoryId,
       title: result.title,
       definition: result.definition,
-      last_reviewed: result.last_reviewed,
-      num_correct: result.num_correct,
-      num_incorrect: result.num_incorrect,
+      lastReviewed: result.lastReviewed,
+      numCorrect: result.numCorrect,
+      numIncorrect: result.numIncorrect,
       clue: result.clue,
       createdAt: new Date(result.createdAt),
     })
@@ -297,9 +297,9 @@ export const getCardsBySubcategory = (subcategoryId: string): Card[] => {
       subcategoryId: result.subcategoryId,
       title: result.title,
       definition: result.definition,
-      last_reviewed: result.last_reviewed,
-      num_correct: result.num_correct,
-      num_incorrect: result.num_incorrect,
+      lastReviewed: result.lastReviewed,
+      numCorrect: result.numCorrect,
+      numIncorrect: result.numIncorrect,
       clue: result.clue,
       createdAt: new Date(result.createdAt),
     })
@@ -319,9 +319,9 @@ export const getCardBySession = (sessionId: string): Card[] => {
       subcategoryId: result.subcategoryId,
       title: result.title,
       definition: result.definition,
-      last_reviewed: result.last_reviewed,
-      num_correct: result.num_correct,
-      num_incorrect: result.num_incorrect,
+      lastReviewed: result.lastReviewed,
+      numCorrect: result.numCorrect,
+      numIncorrect: result.numIncorrect,
       clue: result.clue,
       createdAt: new Date(result.createdAt),
     })
@@ -340,11 +340,11 @@ export const getCardById = (id: string): Card | undefined => {
       subcategoryId: result.subcategoryId ?? undefined,
       title: result.title,
       definition: result.definition,
-      last_reviewed: result.last_reviewed
-        ? new Date(result.last_reviewed)
+      lastReviewed: result.lastReviewed
+        ? new Date(result.lastReviewed)
         : undefined,
-      num_correct: result.num_correct ?? 0,
-      num_incorrect: result.num_incorrect ?? 0,
+      numCorrect: result.numCorrect ?? 0,
+      numIncorrect: result.numIncorrect ?? 0,
       clue: result.clue ?? undefined,
       createdAt: new Date(result.createdAt),
     };
@@ -354,15 +354,15 @@ export const getCardById = (id: string): Card | undefined => {
 // Add a card
 export const addCard = (card: Omit<Card, "id" | "createdAt">) => {
   db.runSync(
-    `INSERT INTO cards (categoryId, subcategoryId, title, definition, last_reviewed, num_correct, num_incorrect) VALUES (?, ?, ?, ?, ?, ?, ?);`,
+    `INSERT INTO cards (categoryId, subcategoryId, title, definition, lastReviewed, numCorrect, numIncorrect) VALUES (?, ?, ?, ?, ?, ?, ?);`,
     [
       card.categoryId ?? null,
       card.subcategoryId ?? null,
       card.title,
       card.definition,
-      card.last_reviewed ? card.last_reviewed.toISOString() : null,
-      card.num_correct ?? 0,
-      card.num_incorrect ?? 0,
+      card.lastReviewed ? card.lastReviewed.toISOString() : null,
+      card.numCorrect ?? 0,
+      card.numIncorrect ?? 0,
       card.clue ?? null,
     ]
   );
@@ -371,15 +371,15 @@ export const addCard = (card: Omit<Card, "id" | "createdAt">) => {
 // Update a card
 export const updateCard = (id: string, card: Card) => {
   db.runSync(
-    `UPDATE cards SET categoryId = ?, subcategoryId = ?, title = ?, definition = ?, last_reviewed = ?, num_correct = ?, num_incorrect = ? WHERE id = ?;`,
+    `UPDATE cards SET categoryId = ?, subcategoryId = ?, title = ?, definition = ?, lastReviewed = ?, numCorrect = ?, numIncorrect = ? WHERE id = ?;`,
     [
       card.categoryId ?? null,
       card.subcategoryId ?? null,
       card.title,
       card.definition,
-      card.last_reviewed ? card.last_reviewed.toISOString() : null,
-      card.num_correct ?? 0,
-      card.num_incorrect ?? 0,
+      card.lastReviewed ? card.lastReviewed.toISOString() : null,
+      card.numCorrect ?? 0,
+      card.numIncorrect ?? 0,
       card.clue ?? null,
       id,
     ]
@@ -401,7 +401,7 @@ export const getAllReviewSessions = (): ReviewSession[] => {
       id: result.id,
       categoryId: result.categoryId ?? null,
       subcategoryId: result.subcategoryId ?? null,
-      review_type: result.review_type,
+      reviewType: result.reviewType,
       wrong: JSON.parse(result.wrong ?? "[]"),
       right: JSON.parse(result.right ?? "[]"),
       reviewedAt: result.reviewedAt ? new Date(result.reviewedAt) : new Date(),
@@ -421,7 +421,7 @@ export const getLatestReviewSession = (): ReviewSession | null => {
     id: latest.id,
     categoryId: latest.categoryId ?? undefined,
     subcategoryId: latest.subcategoryId ?? undefined,
-    review_type: latest.review_type,
+    reviewType: latest.reviewType,
     wrong:
       typeof latest.wrong === "string"
         ? JSON.parse(latest.wrong)
@@ -448,7 +448,7 @@ export const getReviewSessionsByCategory = (
     id: session.id,
     categoryId: session.categoryId ?? undefined,
     subcategoryId: session.subcategoryId ?? undefined,
-    review_type: session.review_type,
+    reviewType: session.reviewType,
     wrong:
       typeof session.wrong === "string"
         ? JSON.parse(session.wrong)
@@ -475,7 +475,7 @@ export const getReviewSessionsBySubcategory = (
     id: session.id,
     categoryId: session.categoryId ?? undefined,
     subcategoryId: session.subcategoryId ?? undefined,
-    review_type: session.review_type,
+    reviewType: session.reviewType,
     wrong:
       typeof session.wrong === "string"
         ? JSON.parse(session.wrong)
@@ -500,7 +500,7 @@ export const getReviewSessionById = (id: string): ReviewSession | null => {
     id: session.id,
     categoryId: session.categoryId ?? undefined,
     subcategoryId: session.subcategoryId ?? undefined,
-    review_type: session.review_type,
+    reviewType: session.reviewType,
     wrong:
       typeof session.wrong === "string"
         ? JSON.parse(session.wrong)
@@ -519,11 +519,11 @@ export const addReviewSession = (
   session: Omit<ReviewSession, "id" | "createdAt">
 ) => {
   db.runSync(
-    `INSERT INTO review_sessions (categoryId, subcategoryId, review_type, wrong, right, reviewedAt) VALUES (?, ?, ?, ?, ?, ?);`,
+    `INSERT INTO review_sessions (categoryId, subcategoryId, reviewType, wrong, right, reviewedAt) VALUES (?, ?, ?, ?, ?, ?);`,
     [
       session.categoryId ?? null,
       session.subcategoryId ?? null,
-      session.review_type,
+      session.reviewType,
       session.wrong ? JSON.stringify(session.wrong) : null,
       session.right ? JSON.stringify(session.right) : null,
       session.reviewedAt ? session.reviewedAt.toISOString() : null,
