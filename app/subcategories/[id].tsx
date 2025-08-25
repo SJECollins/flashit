@@ -10,6 +10,9 @@ import {
   deleteSubcategory,
   getSubcategoryById,
   Subcategory,
+  getCardsBySubcategory,
+  updateCard,
+  Card,
 } from "@/data/db";
 import { useMessage } from "../_layout";
 import PageView from "@/components/pageView";
@@ -20,7 +23,7 @@ export default function SubcategoryDetails() {
   const { triggerMessage } = useMessage();
 
   const [subcategory, setSubcategory] = useState<Subcategory | null>(null);
-  const [category, setCategory] = useState<Category | null>(null);
+  const [category, setCategory] = useState<Category | undefined>(undefined);
   const [sessions, setSessions] = useState<ReviewSession[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -31,13 +34,9 @@ export default function SubcategoryDetails() {
         if (subcategory) {
           setSubcategory(subcategory);
           const category = getCategoryById(subcategory.categoryId);
-          if (category) {
-            setCategory(category);
-          }
+          setCategory(category);
           const sessions = getReviewSessionsBySubcategory(id[0]);
-          if (sessions) {
-            setSessions(sessions);
-          }
+          setSessions(sessions);
         } else {
           triggerMessage("Subcategory not found", "error");
           router.push("./");
@@ -57,6 +56,13 @@ export default function SubcategoryDetails() {
 
   const deleteSubcategoryHandler = () => {
     if (id) {
+      const relatedCards = getCardsBySubcategory(id[0]);
+      if (relatedCards.length > 0) {
+        relatedCards.forEach((card: Card) => {
+          card.subcategoryId = undefined;
+          updateCard(card.id, card);
+        });
+      }
       deleteSubcategory(id[0]);
       triggerMessage("Subcategory deleted successfully", "success");
       router.push("./");
@@ -82,7 +88,7 @@ export default function SubcategoryDetails() {
               Last reviewed:{" "}
               {sessions[0].reviewedAt
                 ? new Date(sessions[0].reviewedAt).toLocaleDateString()
-                : "Unknown"}
+                : "Never"}
             </Text>
           </>
         ) : (
@@ -122,6 +128,10 @@ export default function SubcategoryDetails() {
 
       <Modal visible={modalVisible} onDismiss={() => setModalVisible(false)}>
         <Text>Are you sure you want to delete this subcategory?</Text>
+        <Text variant="bodySmall">
+          This action cannot be undone. Related cards will not be deleted and
+          will remain assigned to their parent category.
+        </Text>
         <Button mode="contained" onPress={deleteSubcategoryHandler}>
           Confirm
         </Button>

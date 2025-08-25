@@ -16,10 +16,13 @@ export default function AddSubcategoryScreen() {
   const { triggerMessage } = useMessage();
   const theme = useTheme();
   const { categoryId } = useLocalSearchParams();
-  const [subcategory, setSubcategory] = useState<Omit<Subcategory, "id">>({
+  const [subcategory, setSubcategory] = useState<
+    Omit<Subcategory, "id" | "createdAt">
+  >({
     name: "",
     description: "",
     categoryId: "",
+    cards: [],
   });
   const [categoryList, setCategoryList] = useState<Category[]>([]);
 

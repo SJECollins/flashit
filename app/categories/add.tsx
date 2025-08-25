@@ -8,9 +8,11 @@ import PageView from "@/components/pageView";
 export default function AddCategoryScreen() {
   const router = useRouter();
   const { triggerMessage } = useMessage();
-  const [category, setCategory] = useState<Omit<Category, "id">>({
+  const [category, setCategory] = useState<Omit<Category, "id" | "createdAt">>({
     name: "",
     description: "",
+    subcategories: [],
+    cards: [],
   });
 
   const addCategoryHandler = async () => {
