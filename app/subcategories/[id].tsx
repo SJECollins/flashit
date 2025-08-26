@@ -1,13 +1,14 @@
 import { useCallback, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { Text, Button, Modal } from "react-native-paper";
+import { Text, TextInput, Button, Modal } from "react-native-paper";
 import {
   getCategoryById,
   Category,
   getReviewSessionsBySubcategory,
   ReviewSession,
   deleteSubcategory,
+  updateSubcategory,
   getSubcategoryById,
   Subcategory,
   getCardsBySubcategory,
@@ -26,6 +27,11 @@ export default function SubcategoryDetails() {
   const [category, setCategory] = useState<Category | undefined>(undefined);
   const [sessions, setSessions] = useState<ReviewSession[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [editName, setEditName] = useState(false);
+  const [editDescription, setEditDescription] = useState(false);
+  const [tempName, setTempName] = useState("");
+  const [tempDescription, setTempDescription] = useState("");
 
   const loadData = () => {
     try {
@@ -54,6 +60,25 @@ export default function SubcategoryDetails() {
     }, [id])
   );
 
+  const editNameHandler = () => {
+    if (subcategory) {
+      updateSubcategory(subcategory.id, { ...subcategory, name: tempName });
+      setSubcategory({ ...subcategory, name: tempName });
+      setEditName(false);
+    }
+  };
+
+  const editDescriptionHandler = () => {
+    if (subcategory) {
+      updateSubcategory(subcategory.id, {
+        ...subcategory,
+        description: tempDescription,
+      });
+      setSubcategory({ ...subcategory, description: tempDescription });
+      setEditDescription(false);
+    }
+  };
+
   const deleteSubcategoryHandler = () => {
     if (id) {
       const relatedCards = getCardsBySubcategory(id[0]);
@@ -75,11 +100,53 @@ export default function SubcategoryDetails() {
 
   return (
     <PageView>
-      <Text variant="headlineMedium">{subcategory.name}</Text>
+      {editName ? (
+        <>
+          <TextInput label="Name" value={tempName} onChangeText={setTempName} />
+          <View style={styles.row}>
+            <Button mode="contained" onPress={editNameHandler}>
+              Save
+            </Button>
+            <Button mode="outlined" onPress={() => setEditName(false)}>
+              Cancel
+            </Button>
+          </View>
+        </>
+      ) : (
+        <>
+          <Text variant="headlineMedium">{subcategory.name}</Text>
+          <Button mode="contained" onPress={() => setEditName(true)}>
+            Edit
+          </Button>
+        </>
+      )}
       {category && (
         <Text variant="bodyMedium">Subcategory of {category?.name}</Text>
       )}
-      <Text variant="bodyMedium">{subcategory.description}</Text>
+      {editDescription ? (
+        <>
+          <TextInput
+            label="Description"
+            value={tempDescription}
+            onChangeText={setTempDescription}
+          />
+          <View style={styles.row}>
+            <Button mode="contained" onPress={editDescriptionHandler}>
+              Save
+            </Button>
+            <Button mode="outlined" onPress={() => setEditDescription(false)}>
+              Cancel
+            </Button>
+          </View>
+        </>
+      ) : (
+        <>
+          <Text variant="bodyMedium">{subcategory.description}</Text>
+          <Button mode="contained" onPress={() => setEditDescription(true)}>
+            Edit
+          </Button>
+        </>
+      )}
       <View style={styles.row}>
         {sessions.length > 0 ? (
           <>
@@ -132,12 +199,14 @@ export default function SubcategoryDetails() {
           This action cannot be undone. Related cards will not be deleted and
           will remain assigned to their parent category.
         </Text>
-        <Button mode="contained" onPress={deleteSubcategoryHandler}>
-          Confirm
-        </Button>
-        <Button mode="outlined" onPress={() => setModalVisible(false)}>
-          Cancel
-        </Button>
+        <View style={styles.row}>
+          <Button mode="contained" onPress={deleteSubcategoryHandler}>
+            Confirm
+          </Button>
+          <Button mode="outlined" onPress={() => setModalVisible(false)}>
+            Cancel
+          </Button>
+        </View>
       </Modal>
     </PageView>
   );
@@ -147,6 +216,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 20,
+    marginBottom: 10,
   },
 });

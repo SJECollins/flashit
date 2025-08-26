@@ -65,6 +65,9 @@ export default function CardsIndex() {
   return (
     <PageView>
       <Text variant="headlineMedium">Cards</Text>
+      <Button icon="plus" mode="contained" onPress={() => router.push("./add")}>
+        Add Card
+      </Button>
       <Text variant="bodyMedium">Total: {cards.length}</Text>
       <Text variant="bodyMedium">Filter by Category:</Text>
       <Picker

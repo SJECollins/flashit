@@ -164,14 +164,6 @@ function RootLayout() {
           }}
         />
         <DrawerNavigator.Screen
-          name="cards/edit/[id]"
-          options={{
-            headerShown: true,
-            title: "Edit Card",
-            drawerItemStyle: { height: 0 },
-          }}
-        />
-        <DrawerNavigator.Screen
           name="cards/add"
           options={{
             headerShown: true,

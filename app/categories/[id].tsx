@@ -1,9 +1,17 @@
 import { useCallback, useState } from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { Text, Button, Modal, List, IconButton } from "react-native-paper";
+import {
+  Text,
+  Button,
+  Modal,
+  List,
+  IconButton,
+  TextInput,
+} from "react-native-paper";
 import {
   getCategoryById,
+  updateCategory,
   deleteCategory,
   Category,
   getReviewSessionsByCategory,
@@ -23,6 +31,11 @@ export default function CategoryDetails() {
   const [category, setCategory] = useState<Category | null>(null);
   const [sessions, setSessions] = useState<ReviewSession[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [tempName, setTempName] = useState("");
+  const [tempDescription, setTempDescription] = useState("");
+  const [editName, seteditName] = useState(false);
+  const [editDescription, setEditDescription] = useState(false);
 
   const loadData = () => {
     try {
@@ -49,6 +62,25 @@ export default function CategoryDetails() {
     }, [id])
   );
 
+  const editNameHandler = () => {
+    if (category) {
+      updateCategory(category.id, { ...category, name: tempName });
+      setCategory({ ...category, name: tempName });
+      seteditName(false);
+    }
+  };
+
+  const editDefinitionHandler = () => {
+    if (category) {
+      updateCategory(category.id, {
+        ...category,
+        description: tempDescription,
+      });
+      setCategory({ ...category, description: tempDescription });
+      setEditDescription(false);
+    }
+  };
+
   const deleteCategoryHandler = () => {
     if (id) {
       // Delete related cards and subcategories and sessions
@@ -73,10 +105,56 @@ export default function CategoryDetails() {
 
   return (
     <PageView>
-      <Text variant="headlineMedium" style={{ marginBottom: 8 }}>
-        {category.name}
-      </Text>
-      <Text variant="bodyMedium">{category.description}</Text>
+      {editName ? (
+        <>
+          <TextInput
+            label="Name"
+            value={tempName}
+            onChangeText={(text) => setTempName(text)}
+          />
+          <View style={styles.row}>
+            <Button mode="contained" onPress={editNameHandler}>
+              Save
+            </Button>
+            <Button mode="outlined" onPress={() => seteditName(false)}>
+              Cancel
+            </Button>
+          </View>
+        </>
+      ) : (
+        <>
+          <Text variant="headlineMedium" style={{ marginBottom: 8 }}>
+            {category.name}
+          </Text>
+          <Button mode="contained" onPress={() => seteditName(true)}>
+            Edit
+          </Button>
+        </>
+      )}
+      {editDescription ? (
+        <>
+          <TextInput
+            label="Description"
+            value={tempDescription}
+            onChangeText={(text) => setTempDescription(text)}
+          />
+          <View style={styles.row}>
+            <Button mode="contained" onPress={editDefinitionHandler}>
+              Save
+            </Button>
+            <Button mode="outlined" onPress={() => setEditDescription(false)}>
+              Cancel
+            </Button>
+          </View>
+        </>
+      ) : (
+        <>
+          <Text variant="bodyMedium">{category.description}</Text>
+          <Button mode="contained" onPress={() => setEditDescription(true)}>
+            Edit
+          </Button>
+        </>
+      )}
       {category.subcategories.length > 0 ? (
         <ScrollView style={styles.scrollView}>
           <Text variant="headlineSmall">
@@ -129,12 +207,14 @@ export default function CategoryDetails() {
           This action cannot be undone. Related items (e.g. subcategories,
           cards, etc.) will be deleted.
         </Text>
-        <Button mode="contained" onPress={deleteCategoryHandler}>
-          Confirm
-        </Button>
-        <Button mode="outlined" onPress={() => setModalVisible(false)}>
-          Cancel
-        </Button>
+        <View style={styles.row}>
+          <Button mode="contained" onPress={deleteCategoryHandler}>
+            Confirm
+          </Button>
+          <Button mode="outlined" onPress={() => setModalVisible(false)}>
+            Cancel
+          </Button>
+        </View>
       </Modal>
     </PageView>
   );
@@ -148,7 +228,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 10,
   },
 });

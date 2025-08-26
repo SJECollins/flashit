@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect } from "react";
 import {
   getCardById,
   updateCard,
+  deleteCard,
   getCategoryById,
   getSubcategoryById,
   Card,
@@ -11,7 +12,7 @@ import {
 import { useMessage } from "../_layout";
 import PageView from "@/components/pageView";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { Text, TextInput, Button, Divider } from "react-native-paper";
+import { Text, TextInput, Button, Divider, Modal } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
 
 export default function CardDetails() {
@@ -29,6 +30,7 @@ export default function CardDetails() {
   const [tempTitle, setTempTitle] = useState("");
   const [tempDefinition, setTempDefinition] = useState("");
   const [tempClue, setTempClue] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   const loadData = () => {
     try {
@@ -84,6 +86,14 @@ export default function CardDetails() {
       updateCard(card.id, { ...card, clue: tempClue });
       setCard({ ...card, clue: tempClue });
       setEditClue(false);
+    }
+  };
+
+  const handleDeleteCard = () => {
+    if (card) {
+      deleteCard(card.id);
+      triggerMessage("Card deleted successfully", "success");
+      router.push("./");
     }
   };
 
@@ -179,6 +189,18 @@ export default function CardDetails() {
       </Text>
       <Text variant="bodySmall">Correct: {card.numCorrect}</Text>
       <Text variant="bodySmall">Incorrect: {card.numIncorrect}</Text>
+      <Modal visible={modalVisible} onDismiss={() => setModalVisible(false)}>
+        <Text>Are you sure you want to delete this card?</Text>
+        <Text variant="bodySmall">This action cannot be undone.</Text>
+        <View style={styles.row}>
+          <Button mode="contained" onPress={handleDeleteCard}>
+            Confirm
+          </Button>
+          <Button mode="outlined" onPress={() => setModalVisible(false)}>
+            Cancel
+          </Button>
+        </View>
+      </Modal>
     </PageView>
   );
 }
