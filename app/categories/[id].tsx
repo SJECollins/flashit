@@ -8,6 +8,7 @@ import {
   List,
   IconButton,
   TextInput,
+  Divider,
 } from "react-native-paper";
 import {
   getCategoryById,
@@ -155,6 +156,38 @@ export default function CategoryDetails() {
           </Button>
         </>
       )}
+      {category.cards.length > 0 ? (
+        <ScrollView style={styles.scrollView}>
+          <Text variant="headlineSmall">Cards ({category.cards.length}):</Text>
+          {category.cards.map((card) => (
+            <List.Item
+              key={card.id}
+              title={card.title}
+              left={() => <List.Icon icon="card" />}
+              right={() => (
+                <IconButton
+                  icon="chevron-right"
+                  onPress={() => router.push("./cards/" + card.id)}
+                />
+              )}
+            />
+          ))}
+        </ScrollView>
+      ) : (
+        <Text variant="bodyMedium">No cards yet.</Text>
+      )}
+      <Button
+        mode="contained"
+        onPress={() =>
+          router.push({
+            pathname: "./cards/add",
+            params: { categoryId: category.id },
+          })
+        }
+      >
+        Add Flashcard
+      </Button>
+      <Divider />
       {category.subcategories.length > 0 ? (
         <ScrollView style={styles.scrollView}>
           <Text variant="headlineSmall">
@@ -201,6 +234,17 @@ export default function CategoryDetails() {
           <Text variant="bodyMedium">No review sessions available.</Text>
         )}
       </View>
+      <Button
+        mode="contained"
+        onPress={() =>
+          router.push({
+            pathname: "./sessions/new",
+            params: { categoryId: category.id },
+          })
+        }
+      >
+        Start New Session
+      </Button>
       <Modal visible={modalVisible} onDismiss={() => setModalVisible(false)}>
         <Text>Are you sure you want to delete this category?</Text>
         <Text variant="bodySmall">
@@ -223,7 +267,7 @@ export default function CategoryDetails() {
 const styles = StyleSheet.create({
   scrollView: {
     padding: 16,
-    maxHeight: "50%",
+    maxHeight: "30%",
   },
   row: {
     flexDirection: "row",
