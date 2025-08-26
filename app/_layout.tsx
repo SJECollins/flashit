@@ -188,14 +188,6 @@ function RootLayout() {
           }}
         />
         <DrawerNavigator.Screen
-          name="categories/edit/[id]"
-          options={{
-            headerShown: true,
-            title: "Edit Category",
-            drawerItemStyle: { height: 0 },
-          }}
-        />
-        <DrawerNavigator.Screen
           name="subcategories/[id]"
           options={{
             headerShown: true,
@@ -212,18 +204,26 @@ function RootLayout() {
           }}
         />
         <DrawerNavigator.Screen
-          name="subcategories/edit/[id]"
-          options={{
-            headerShown: true,
-            title: "Edit Subcategory",
-            drawerItemStyle: { height: 0 },
-          }}
-        />
-        <DrawerNavigator.Screen
           name="sessions/[id]"
           options={{
             headerShown: true,
             title: "Session Details",
+            drawerItemStyle: { height: 0 },
+          }}
+        />
+        <DrawerNavigator.Screen
+          name="sessions/new"
+          options={{
+            headerShown: true,
+            title: "New Session",
+            drawerItemStyle: { height: 0 },
+          }}
+        />
+        <DrawerNavigator.Screen
+          name="sessions/session"
+          options={{
+            headerShown: true,
+            title: "Review Session",
             drawerItemStyle: { height: 0 },
           }}
         />
