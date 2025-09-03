@@ -1,10 +1,10 @@
-import { ScrollView, StyleSheet } from "react-native";
-import { Text, List, IconButton, Button } from "react-native-paper";
-import { getAllCategories, Category } from "@/data/db";
 import PageView from "@/components/pageView";
-import { useCallback, useState } from "react";
-import { useMessage } from "../_layout";
+import { Category, getAllCategories } from "@/data/db";
 import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { ScrollView, StyleSheet } from "react-native";
+import { Button, IconButton, List, Text } from "react-native-paper";
+import { useMessage } from "../_layout";
 
 export default function CategoriesPage() {
   const router = useRouter();
@@ -48,7 +48,9 @@ export default function CategoriesPage() {
               right={() => (
                 <IconButton
                   icon="chevron-right"
-                  onPress={() => router.push("./" + category.id)}
+                  onPress={() =>
+                    router.push({ pathname: `./categories/${category.id}` })
+                  }
                 />
               )}
             />

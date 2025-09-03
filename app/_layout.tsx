@@ -1,12 +1,12 @@
-import { withLayoutContext } from "expo-router";
-import { PaperProvider, MD3DarkTheme, MD3LightTheme } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { createContext, useContext, useEffect, useState } from "react";
 import DisplayMessage from "@/components/displayMessage";
-import { setupDatabase } from "../data/db";
-import { Appearance } from "react-native";
-import { StatusBar } from "expo-status-bar";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { withLayoutContext } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { createContext, useContext, useEffect, useState } from "react";
+import { Appearance } from "react-native";
+import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
+import { setupDatabase } from "../data/db";
 
 // Handle theme for app, based on device theme - darkmode by default
 const ThemeContext = createContext<
@@ -85,7 +85,20 @@ function RootLayout() {
         messageText={message ?? ""}
         messageType={messageType ?? "success"}
       />
-      <DrawerNavigator>
+      <DrawerNavigator
+        screenOptions={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: theme.colors.background,
+          },
+          headerTintColor: theme.colors.onBackground,
+          drawerStyle: {
+            backgroundColor: theme.colors.background,
+          },
+          drawerActiveTintColor: theme.colors.primary,
+          drawerInactiveTintColor: theme.colors.onBackground,
+        }}
+      >
         <DrawerNavigator.Screen
           name="index"
           options={{
@@ -101,20 +114,6 @@ function RootLayout() {
           options={{
             headerShown: true,
             title: "Categories",
-            drawerIcon: ({ color, size }: { color: string; size: number }) => (
-              <MaterialCommunityIcons
-                name="format-list-bulleted"
-                color={color}
-                size={24}
-              />
-            ),
-          }}
-        />
-        <DrawerNavigator.Screen
-          name="subcategories/index"
-          options={{
-            headerShown: true,
-            title: "Subcategories",
             drawerIcon: ({ color, size }: { color: string; size: number }) => (
               <MaterialCommunityIcons
                 name="format-list-bulleted"

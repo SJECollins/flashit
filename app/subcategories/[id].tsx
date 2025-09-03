@@ -1,22 +1,22 @@
+import PageView from "@/components/pageView";
+import {
+  Card,
+  Category,
+  deleteSubcategory,
+  getCardsBySubcategory,
+  getCategoryById,
+  getReviewSessionsBySubcategory,
+  getSubcategoryById,
+  ReviewSession,
+  Subcategory,
+  updateCard,
+  updateSubcategory,
+} from "@/data/db";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { Text, TextInput, Button, Modal } from "react-native-paper";
-import {
-  getCategoryById,
-  Category,
-  getReviewSessionsBySubcategory,
-  ReviewSession,
-  deleteSubcategory,
-  updateSubcategory,
-  getSubcategoryById,
-  Subcategory,
-  getCardsBySubcategory,
-  updateCard,
-  Card,
-} from "@/data/db";
+import { Button, Modal, Text, TextInput } from "react-native-paper";
 import { useMessage } from "../_layout";
-import PageView from "@/components/pageView";
 
 export default function SubcategoryDetails() {
   const router = useRouter();
@@ -163,7 +163,14 @@ export default function SubcategoryDetails() {
         )}
       </View>
       <View style={styles.row}>
-        <Button mode="contained" onPress={() => router.push("./edit/" + id)}>
+        <Button
+          mode="contained"
+          onPress={() =>
+            router.push({
+              pathname: `./edit/${Array.isArray(id) ? id[0] : id}`,
+            })
+          }
+        >
           Edit
         </Button>
         <Button mode="contained-tonal" onPress={() => setModalVisible(true)}>

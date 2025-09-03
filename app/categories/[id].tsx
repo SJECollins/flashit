@@ -1,28 +1,28 @@
-import { useCallback, useState } from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import PageView from "@/components/pageView";
 import {
-  Text,
-  Button,
-  Modal,
-  List,
-  IconButton,
-  TextInput,
-  Divider,
-} from "react-native-paper";
-import {
-  getCategoryById,
-  updateCategory,
-  deleteCategory,
   Category,
+  deleteCard,
+  deleteCategory,
+  deleteReviewSession,
+  deleteSubcategory,
+  getCategoryById,
   getReviewSessionsByCategory,
   ReviewSession,
-  deleteCard,
-  deleteSubcategory,
-  deleteReviewSession,
+  updateCategory,
 } from "@/data/db";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  Button,
+  Divider,
+  IconButton,
+  List,
+  Modal,
+  Text,
+  TextInput,
+} from "react-native-paper";
 import { useMessage } from "../_layout";
-import PageView from "@/components/pageView";
 
 export default function CategoryDetails() {
   const router = useRouter();
@@ -167,7 +167,7 @@ export default function CategoryDetails() {
               right={() => (
                 <IconButton
                   icon="chevron-right"
-                  onPress={() => router.push("./cards/" + card.id)}
+                  onPress={() => router.push(`./cards/${card.id}`)}
                 />
               )}
             />
@@ -201,7 +201,9 @@ export default function CategoryDetails() {
               right={() => (
                 <IconButton
                   icon="chevron-right"
-                  onPress={() => router.push("./subcategories/" + subcat.id)}
+                  onPress={() =>
+                    router.push({ pathname: `./subcategories/${subcat.id}` })
+                  }
                 />
               )}
             />
@@ -212,7 +214,10 @@ export default function CategoryDetails() {
           <Text variant="bodyMedium">No subcategories yet.</Text>
           <Button
             onPress={() =>
-              router.push("./add-subcategory?categoryId=" + category.id)
+              router.push({
+                pathname: "./add-subcategory",
+                params: { categoryId: category.id },
+              })
             }
           >
             Add Subcategory

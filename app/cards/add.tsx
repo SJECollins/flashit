@@ -1,28 +1,30 @@
-import { useCallback, useState } from "react";
-import { Text, TextInput, Button } from "react-native-paper";
-import { Picker } from "@react-native-picker/picker";
-import {
-  addCard,
-  Card,
-  getAllCategories,
-  Category,
-  Subcategory,
-} from "@/data/db";
-import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
-import { useMessage } from "../_layout";
 import PageView from "@/components/pageView";
+import { addCard, Card, Category, getAllCategories } from "@/data/db";
+import { Picker } from "@react-native-picker/picker";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import {
+  Button,
+  MD3DarkTheme,
+  MD3LightTheme,
+  Text,
+  TextInput,
+} from "react-native-paper";
+import { useAppTheme, useMessage } from "../_layout";
 
 export default function AddCardScreen() {
+  const { darkMode } = useAppTheme();
+  const theme = darkMode ? MD3DarkTheme : MD3LightTheme;
   const { categoryId, subcategoryId } = useLocalSearchParams();
   const router = useRouter();
   const { triggerMessage } = useMessage();
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCatId, setSelectedCatId] = useState<string>(
-    categoryId[0] || ""
+    categoryId?.[0] || ""
   );
   const [selectedSubcatId, setSelectedSubcatId] = useState<string>(
-    subcategoryId[0] || ""
+    subcategoryId?.[0] || ""
   );
   const [newCard, setNewCard] = useState<Omit<Card, "id" | "createdAt">>({
     categoryId: "",
@@ -116,6 +118,7 @@ export default function AddCardScreen() {
         </Text>
       ) : (
         <Picker
+          style={{ color: theme.colors.primary }}
           selectedValue={selectedCatId}
           onValueChange={(itemValue) => setSelectedCatId(itemValue)}
         >
@@ -135,6 +138,7 @@ export default function AddCardScreen() {
         </Text>
       ) : (
         <Picker
+          style={{ color: theme.colors.primary }}
           selectedValue={selectedSubcatId}
           onValueChange={(itemValue) => setSelectedSubcatId(itemValue)}
         >
@@ -174,10 +178,10 @@ const styles = StyleSheet.create({
   col: {
     flexDirection: "column",
     justifyContent: "space-around",
-    marginBottom: 10,
+    marginBottom: 20,
   },
   input: {
-    flex: 1,
+    // flex: 1,
     marginLeft: 10,
   },
 });

@@ -1,19 +1,28 @@
-import { useState } from "react";
-import { useRouter } from "expo-router";
-import { useMessage } from "../_layout";
-import { Category, addCategory } from "@/data/db";
-import { Text, TextInput, Button } from "react-native-paper";
 import PageView from "@/components/pageView";
+import { Category, addCategory } from "@/data/db";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { Button, Text, TextInput } from "react-native-paper";
+import { useMessage } from "../_layout";
+
+const initialCategoryState: Omit<Category, "id" | "createdAt"> = {
+  name: "",
+  description: "",
+  subcategories: [],
+  cards: [],
+};
 
 export default function AddCategoryScreen() {
   const router = useRouter();
   const { triggerMessage } = useMessage();
-  const [category, setCategory] = useState<Omit<Category, "id" | "createdAt">>({
-    name: "",
-    description: "",
-    subcategories: [],
-    cards: [],
-  });
+  const [category, setCategory] =
+    useState<Omit<Category, "id" | "createdAt">>(initialCategoryState);
+
+  useFocusEffect(
+    useCallback(() => {
+      setCategory(initialCategoryState);
+    }, [])
+  );
 
   const addCategoryHandler = async () => {
     try {

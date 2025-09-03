@@ -89,8 +89,7 @@ export const setupDatabase = () => {
             reviewedAt DATE,
             createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (categoryId) REFERENCES categories (id),
-            FOREIGN KEY (subcategoryId) REFERENCES subcategories (id),
-            FOREIGN KEY (cardId) REFERENCES cards (id)
+            FOREIGN KEY (subcategoryId) REFERENCES subcategories (id)
         );
         `
   );

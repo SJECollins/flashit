@@ -1,14 +1,15 @@
-import { ScrollView, View, StyleSheet } from "react-native";
-import { Text, Button, List, IconButton } from "react-native-paper";
-import { Picker } from "@react-native-picker/picker";
-import { Card, getAllCategories, Category, Subcategory } from "@/data/db";
-import { useMessage } from "../_layout";
 import PageView from "@/components/pageView";
+import { Card, Category, getAllCategories, Subcategory } from "@/data/db";
+import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
+import { ScrollView, StyleSheet } from "react-native";
+import { Button, IconButton, List, Text, useTheme } from "react-native-paper";
+import { useMessage } from "../_layout";
 
 export default function CardsIndex() {
   const router = useRouter();
+  const theme = useTheme();
   const { triggerMessage } = useMessage();
   const [cards, setCards] = useState<Card[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -65,12 +66,17 @@ export default function CardsIndex() {
   return (
     <PageView>
       <Text variant="headlineMedium">Cards</Text>
-      <Button icon="plus" mode="contained" onPress={() => router.push("./add")}>
+      <Button
+        icon="plus"
+        mode="contained"
+        onPress={() => router.push("./cards/add")}
+      >
         Add Card
       </Button>
       <Text variant="bodyMedium">Total: {cards.length}</Text>
       <Text variant="bodyMedium">Filter by Category:</Text>
       <Picker
+        style={{ color: theme.colors.primary }}
         selectedValue={selectedCategory}
         onValueChange={(value) => {
           setSelectedCategory(value);
@@ -88,6 +94,7 @@ export default function CardsIndex() {
       </Picker>
       <Text variant="bodyMedium">Filter by Subcategory:</Text>
       <Picker
+        style={{ color: theme.colors.primary }}
         selectedValue={selectedSubcategory}
         onValueChange={(value) => {
           setSelectedSubcategory(value);
@@ -112,7 +119,7 @@ export default function CardsIndex() {
             right={() => (
               <IconButton
                 icon="chevron-right"
-                onPress={() => router.push("./" + card.id)}
+                onPress={() => router.push({ pathname: `./${card.id}` as any })}
               />
             )}
           />
