@@ -37,8 +37,8 @@ const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 // Messages/notifications
 interface MessageContextType {
   message: string | null;
-  messageType: "error" | "success" | null;
-  triggerMessage: (message: string, type: "error" | "success") => void;
+  messageType: "error" | "success" | "info" | null;
+  triggerMessage: (message: string, type: "error" | "success" | "info") => void;
 }
 
 const MessageContext = createContext<MessageContextType | undefined>(undefined);
@@ -53,11 +53,11 @@ export const useMessage = () => {
 
 const MessageProvider = ({ children }: { children: React.ReactNode }) => {
   const [message, setMessage] = useState<string | null>(null);
-  const [messageType, setMessageType] = useState<"error" | "success" | null>(
-    null
-  );
+  const [messageType, setMessageType] = useState<
+    "error" | "success" | "info" | null
+  >(null);
 
-  const triggerMessage = (msg: string, type: "error" | "success") => {
+  const triggerMessage = (msg: string, type: "error" | "success" | "info") => {
     setMessage(msg);
     setMessageType(type);
   };

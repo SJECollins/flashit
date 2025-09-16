@@ -67,6 +67,13 @@ export default function AddCardScreen() {
           }
         });
       }
+
+      if (allCategories.length === 0) {
+        triggerMessage(
+          "No categories found. Please add a category first.",
+          "info"
+        );
+      }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       triggerMessage("Error loading categories: " + errorMsg, "error");
@@ -104,6 +111,22 @@ export default function AddCardScreen() {
       triggerMessage("Failed to add card: " + errorMsg, "error");
     }
   };
+
+  if (categories.length === 0) {
+    return (
+      <PageView>
+        <Text variant="headlineMedium" style={{ marginBottom: 20 }}>
+          No Categories Found
+        </Text>
+        <Text variant="bodyMedium" style={{ marginBottom: 20 }}>
+          Please add a category before adding cards.
+        </Text>
+        <Button onPress={() => router.push("/categories/add")}>
+          Add Category
+        </Button>
+      </PageView>
+    );
+  }
 
   return (
     <PageView>

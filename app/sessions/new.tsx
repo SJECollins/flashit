@@ -97,7 +97,7 @@ export default function NewSessionScreen() {
 
     // Navigate to /session and pass params
     router.push({
-      pathname: "/session",
+      pathname: "/sessions",
       params: {
         categoryId: selectedSession.categoryId,
         subcategoryId: selectedSession.subcategoryId,

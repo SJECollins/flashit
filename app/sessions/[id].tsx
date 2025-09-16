@@ -137,7 +137,7 @@ export default function SessionDetails() {
                 <IconButton
                   icon="chevron-right"
                   onPress={() => {
-                    router.push("../cards/" + card.id);
+                    router.push({ pathname: `../cards/${card.id}` });
                   }}
                 />
               )}

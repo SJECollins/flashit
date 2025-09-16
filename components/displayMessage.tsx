@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,10 +13,13 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   error: {
-    backgroundColor: "#ffebee",
+    backgroundColor: "#fddadfff",
   },
   success: {
-    backgroundColor: "#e8f5e9",
+    backgroundColor: "#d6ffd9ff",
+  },
+  info: {
+    backgroundColor: "#c9e1fdff",
   },
   messageText: {
     fontSize: 16,
@@ -28,11 +31,14 @@ const styles = StyleSheet.create({
   successText: {
     color: "green",
   },
+  infoText: {
+    color: "blue",
+  },
 });
 
 interface DisplayMessageProps {
   messageText: string;
-  messageType: "error" | "success";
+  messageType: "error" | "success" | "info";
 }
 
 export default function DisplayMessage({
@@ -40,7 +46,7 @@ export default function DisplayMessage({
   messageType,
 }: DisplayMessageProps) {
   const [message, setMessage] = useState<string | null>(null);
-  const [type, setType] = useState<"error" | "success">("success");
+  const [type, setType] = useState<"error" | "success" | "info">("success");
 
   useEffect(() => {
     setMessage(messageText);

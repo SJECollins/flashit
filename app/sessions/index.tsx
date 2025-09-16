@@ -58,7 +58,7 @@ export default function SessionsScreen() {
               right={() => (
                 <IconButton
                   icon="chevron-right"
-                  onPress={() => router.push("./" + session.id)}
+                  onPress={() => router.push({ pathname: `./${session.id}` })}
                 />
               )}
             />
